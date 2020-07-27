@@ -157,9 +157,9 @@ public abstract class BaseBag implements InventoryHolder {
 
     public Item toItem(){
         if(!item.hasCustomName()) {
-            item.setCustomName(HandBag.getBag().getConfig().getString(name+".name"));
+            item.setCustomName(HandBag.getBag().getConfig().getString(item.getNamedTag().getString("configName")+".name"));
         }
-        List<String> list = HandBag.getBag().getConfig().getStringList(name+".lore");
+        List<String> list = HandBag.getBag().getConfig().getStringList(item.getNamedTag().getString("configName")+".lore");
         LinkedList<String> lores = new LinkedList<>();
         if(list.size() == 0){
             list = this.lores;
@@ -168,7 +168,6 @@ public abstract class BaseBag implements InventoryHolder {
             lores.add(s.replace("%size%",inventory.getInventory().getSize()+"")
                     .replace("%count%",inventory.getInventory().getContents().size()+""));
         }
-        System.out.println(name);
         item.getNamedTag().putCompound(NAME_TAG,toCompoundTagBySlot(inventory.getInventory().getContents()));
         item.setLore(lores.toArray(new String[0]));
         if(!item.hasEnchantments()) {
