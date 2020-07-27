@@ -2,29 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c83373ec-8b7e-4b4d-86dd-62c312b0a706" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HandBag.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/HandBag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/BagInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/BaseInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/BigBagInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/SmallInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/lib/AbstractFakeInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/lib/ChestFakeInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/lib/DoubleChestFakeInventory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/bags/BigBag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/bags/SmallBag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/bags/ToSmallBag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/types/BagType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/HandBag_v1.0-SNAPSHOT.jar" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/HandBag_v1.0.1.jar" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/HandBag_v1.0.2.jar" afterDir="false" />
@@ -65,18 +44,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/HandBag.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25">
-              <caret line="140" column="80" selection-start-line="140" selection-start-column="80" selection-end-line="140" selection-end-column="80" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/inventorys/BaseInventory.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -110,13 +77,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="58" column="33" selection-start-line="58" selection-start-column="33" selection-end-line="58" selection-end-column="33" />
+            <state relative-caret-position="245">
+              <caret line="148" column="68" lean-forward="true" selection-start-line="148" selection-start-column="68" selection-end-line="148" selection-end-column="68" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2247#2248#0" expanded="true" />
+                <element signature="e#2289#2290#0" expanded="true" />
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/LICENSE">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -369,17 +343,25 @@
       <workItem from="1594021616313" duration="597000" />
       <workItem from="1594095622599" duration="580000" />
       <workItem from="1595760599622" duration="2360000" />
-      <workItem from="1595809347227" duration="626000" />
+      <workItem from="1595809347227" duration="1134000" />
     </task>
+    <task id="LOCAL-00001" summary="上传到github">
+      <created>1595815707937</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1595815707937</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75310000" />
+    <option name="totallyTimeSpent" value="75818000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.325067" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.325067" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -395,7 +377,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Tail" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="9" visible="true" weight="0.32941177" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
@@ -414,14 +396,37 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="上传到github" />
+    <option name="LAST_COMMIT_MESSAGE" value="上传到github" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="jar://F:/Maven/.m2/repository/cn/nukkit/nukkit/1.0-SNAPSHOT/nukkit-1.0-20200308.181528-752.jar!/cn/nukkit/form/response/FormResponseCustom.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://F:/Maven/.m2/repository/cn/nukkit/nukkit/1.0-SNAPSHOT/nukkit-1.0-20200308.181528-752.jar!/cn/nukkit/nbt/tag/CompoundTag.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -734,16 +739,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="58" column="33" selection-start-line="58" selection-start-column="33" selection-end-line="58" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/config.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="125">
@@ -794,6 +789,21 @@
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="245">
+          <caret line="148" column="68" lean-forward="true" selection-start-line="148" selection-start-column="68" selection-end-line="148" selection-end-column="68" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2247#2248#0" expanded="true" />
+            <element signature="e#2289#2290#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
   <component name="masterDetails">
