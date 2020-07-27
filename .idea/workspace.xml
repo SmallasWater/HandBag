@@ -29,7 +29,6 @@
       <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -57,18 +56,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/bags/BigBag.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="16" column="8" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="jar://F:/Nukkit驱动/nukkit-1.16.jar!/cn/nukkit/inventory/Inventory.class">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="825">
@@ -77,7 +64,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2699">
@@ -87,6 +74,18 @@
                 <element signature="e#2247#2248#0" expanded="true" />
                 <element signature="e#2289#2290#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="50">
+                <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -203,6 +202,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/CC.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/HandBag.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/smallaswater/handbag/items/BaseBag.java" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -356,7 +356,7 @@
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="settings.editor.selected.configurable" value="settings.github" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -415,7 +415,7 @@
       <workItem from="1594021616313" duration="597000" />
       <workItem from="1594095622599" duration="580000" />
       <workItem from="1595760599622" duration="2360000" />
-      <workItem from="1595809347227" duration="1380000" />
+      <workItem from="1595809347227" duration="1882000" />
     </task>
     <task id="LOCAL-00001" summary="上传到github">
       <created>1595815707937</created>
@@ -431,17 +431,31 @@
       <option name="project" value="LOCAL" />
       <updated>1595816182617</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="更新">
+      <created>1595816436477</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1595816436477</updated>
+    </task>
+    <task id="LOCAL-00004" summary="更新">
+      <created>1595816653301</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1595816653301</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="76064000" />
+    <option name="totallyTimeSpent" value="76566000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.325067" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.325067" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -457,7 +471,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Tail" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" visible="true" weight="0.04411765" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="9" visible="true" weight="0.2867647" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
@@ -504,16 +518,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="上传到github" />
-    <option name="LAST_COMMIT_MESSAGE" value="上传到github" />
+    <MESSAGE value="更新" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://F:/Maven/.m2/repository/cn/nukkit/nukkit/1.0-SNAPSHOT/nukkit-1.0-20200308.181528-752.jar!/cn/nukkit/nbt/tag/CompoundTag.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="21" column="11" selection-start-line="21" selection-start-column="11" selection-end-line="21" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://F:/Maven/.m2/repository/cn/nukkit/nukkit/1.0-SNAPSHOT/nukkit-1.0-20200308.181528-752.jar!/cn/nukkit/entity/EntityHuman.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5525">
@@ -882,6 +890,16 @@
             <element signature="e#2247#2248#0" expanded="true" />
             <element signature="e#2289#2290#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="50">
+            <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
