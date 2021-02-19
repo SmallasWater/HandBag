@@ -39,6 +39,8 @@ public abstract class BaseBag implements InventoryHolder {
 
     private BagType type;
 
+    private boolean sneaking;
+
     protected com.smallaswater.handbag.inventorys.BaseInventory inventory;
 
     public final static String NAME_TAG = "bagItems";
@@ -193,6 +195,11 @@ public abstract class BaseBag implements InventoryHolder {
             if(map.containsKey("remove")){
                 remove = Boolean.valueOf(map.get("remove").toString());
             }
+            boolean reset = false;
+            if(map.containsKey("sneaking-rename")){
+                reset = Boolean.valueOf(map.get("sneaking-rename").toString());
+            }
+            item.getNamedTag().putBoolean("sneaking-rename",reset);
             item.getNamedTag().putBoolean("remove",remove);
             item.getNamedTag().putString("configName",name);
             if(map.get("size").toString().equalsIgnoreCase(BagType.SMALL.getName())) {
@@ -207,13 +214,23 @@ public abstract class BaseBag implements InventoryHolder {
                 bag = new ToSmallBag(name,item);
             }
             bag.setCanRemove(item.getNamedTag().getBoolean("remove"));
+            bag.setSneaking(item.getNamedTag().getBoolean("sneaking-rename"));
             bags.add(bag);
+
         }
 
         return bags;
     }
 
-    private static String[] toLore(String name,int size) {
+    public void setSneaking(boolean sneaking) {
+        this.sneaking = sneaking;
+    }
+
+    public boolean isSneaking() {
+        return sneaking;
+    }
+
+    private static String[] toLore(String name, int size) {
         List<String> list = HandBag.getBag().getConfig().getStringList(name+".lore");
         LinkedList<String> lore = new LinkedList<>();
         for (String s : list) {

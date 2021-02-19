@@ -1,0 +1,15 @@
+金币:
+  id: "175:0"
+  value: "%m%"
+  src: "EconomyAPI"
+  msg: "获得 %m% 金币"
+物品:
+  id: "%id%"
+  value: "%id%%count%"
+  src: "minecraft_item"
+  msg: "获得 %id_name% * %count%"
+nbt:
+  id: "%id%"
+  value: "%nbtId%%count%"
+  src: "minecraft_item"
+  msg: "获得 %id_name% * %count%"

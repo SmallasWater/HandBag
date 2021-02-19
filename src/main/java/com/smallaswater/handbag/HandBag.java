@@ -19,10 +19,13 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.plugin.PluginBase;
+import com.smallaswater.handbag.commands.HandBagUseCommand;
+import com.smallaswater.handbag.forms.WindowsListener;
 import com.smallaswater.handbag.inventorys.BagInventory;
 import com.smallaswater.handbag.inventorys.BigBagInventory;
 import com.smallaswater.handbag.items.BaseBag;
 import com.smallaswater.handbag.items.types.BagType;
+import com.smallaswater.handbag.utils.Tools;
 
 
 import java.util.LinkedHashMap;
@@ -40,7 +43,7 @@ public class HandBag extends PluginBase implements Listener {
 
     private LinkedHashMap<String,Long> key = new LinkedHashMap<>();
 
-    private LinkedHashMap<String,Integer> slot = new LinkedHashMap<>();
+    public LinkedHashMap<String,Integer> slot = new LinkedHashMap<>();
 
 
     @Override
@@ -54,14 +57,14 @@ public class HandBag extends PluginBase implements Listener {
 
     private void register() {
         LinkedList<BaseBag> baseBag = BaseBag.registerItem(getConfig());
-        if (baseBag != null) {
-            for(BaseBag baseBag1:baseBag){
-                if (!Item.isCreativeItem(baseBag1.getItem())) {
-                    Item.addCreativeItem(baseBag1.getItem());
-                }
+        for(BaseBag baseBag1:baseBag){
+            if (!Item.isCreativeItem(baseBag1.getItem())) {
+                Item.addCreativeItem(baseBag1.getItem());
             }
-            this.getServer().getPluginManager().registerEvents(this, this);
         }
+        this.getServer().getPluginManager().registerEvents(this, this);
+        this.getServer().getPluginManager().registerEvents(new WindowsListener(), this);
+        this.getServer().getCommandMap().register("handbag",new HandBagUseCommand("hg"));
     }
 
     public static HandBag getBag() {
@@ -72,43 +75,49 @@ public class HandBag extends PluginBase implements Listener {
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         Player player = event.getPlayer();
         Item hand = event.getItem();
-        if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR
-                || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-            if(hand.getNamedTag() != null){
-                if(hand.getNamedTag().contains(BaseBag.NAME_TAG)){
-                    event.setCancelled();
-                    if(hand.getCount() > 1){
-                        player.sendMessage("§6[§7手提袋§6] §c 堆叠状态无法开启");
-                        return;
-                    }
-                    if(player.isSneaking()){
-                        FormWindowCustom simple = new FormWindowCustom("重命名");
-                        simple.addElement(new ElementInput("请输入新的名称"));
-                        player.showFormWindow(simple,0x25565);
-                        return;
-                    }
-                    BaseBag bag = BaseBag.getBaseBagByItem(hand.getNamedTag().getString("configName"),hand);
-                    if(bag == null){
-                        return;
-                    }
-                    BaseInventory inventory = bag.getInventory();
-                    if(bag.getType() == BagType.SMALL){
-                        player.addWindow(sendInventory(player, 98, inventory));
-                    }else if (bag.getType() == BagType.TO_SMALL){
-                        player.addWindow(sendInventory(player,96,inventory));
-                    }else{
-                        long id = Entity.entityCount++;
-                        ((BigBagInventory) inventory).id = id;
-                        key.put(player.getName(),id);
-                        slot.put(player.getName(),player.getInventory().getHeldItemIndex());
-                        player.level.addSound(player, Sound.RANDOM_CHESTOPEN);
-                        player.addWindow(inventory);
-                    }
-                }
+        if(hand == null){
+            return;
+        }
+        if(Tools.isHandBag(hand)) {
+            event.setCancelled();
+            openHandBag(player,player.getInventory().getHeldItemIndex(),hand);
+        }
+
+    }
+
+    public void openHandBag(Player player,int index,Item hand){
+        if(Tools.isHandBag(hand)){
+
+            if(hand.getCount() > 1){
+                player.sendMessage("§6[§7手提袋§6] §c 堆叠状态无法开启");
+                return;
+            }
+
+            BaseBag bag = BaseBag.getBaseBagByItem(hand.getNamedTag().getString("configName"),hand);
+            if(bag == null){
+                return;
+            }
+            slot.put(player.getName(),index);
+            if(player.isSneaking() && bag.isSneaking()){
+                FormWindowCustom simple = new FormWindowCustom("重命名");
+                simple.addElement(new ElementInput("请输入新的名称 [&是颜色符号~]"));
+                player.showFormWindow(simple,0x25565);
+                return;
+            }
+            BaseInventory inventory = bag.getInventory();
+            if(bag.getType() == BagType.SMALL){
+                player.addWindow(sendInventory(player, 98, inventory));
+            }else if (bag.getType() == BagType.TO_SMALL){
+                player.addWindow(sendInventory(player,96,inventory));
+            }else{
+                long id = Entity.entityCount++;
+                ((BigBagInventory) inventory).id = id;
+                key.put(player.getName(),id);
+                player.level.addSound(player, Sound.RANDOM_CHESTOPEN);
+                player.addWindow(inventory);
             }
         }
     }
-
 
 
     private BaseInventory sendInventory(Player player, int type, BaseInventory inventory){
@@ -131,7 +140,6 @@ public class HandBag extends PluginBase implements Listener {
         ((BagInventory) inventory).id = id;
 
         key.put(player.getName(),id);
-        slot.put(player.getName(),player.getInventory().getHeldItemIndex());
         player.level.addSound(player, Sound.RANDOM_CHESTOPEN);
         return inventory;
     }
@@ -149,7 +157,7 @@ public class HandBag extends PluginBase implements Listener {
                 if(holder.getInventory().getContents().size() == 0) {
                     if (((BaseBag) holder).isCanRemove()) {
                         Item r = player.getInventory().getItem(slot);
-                        player.getInventory().remove(r);
+                        player.getInventory().removeItem(r);
                         return;
                     }
                 }
@@ -177,15 +185,18 @@ public class HandBag extends PluginBase implements Listener {
             }
             FormWindowCustom custom = ((FormWindowCustom)event.getWindow());
             String input = custom.getResponse().getInputResponse(0);
-            Item item = player.getInventory().getItemInHand();
+
+            Item item = player.getInventory().getItem(this.slot.get(player.getName()));
             if(item.getNamedTag() != null){
                 if(item.getNamedTag().contains(BaseBag.NAME_TAG)){
+                    int slot = this.slot.get(player.getName());
+                    this.slot.remove(player.getName());
                     if("".equalsIgnoreCase(input)) {
                         input = "未命名手提袋";
                     }
-                    item.setCustomName(input);
-                    player.getInventory().setItemInHand(item);
-                    player.sendMessage("§6[§7手提袋§6] §2 成功重命名为: §r"+input);
+                    item.setCustomName(input.replace("&","§"));
+                    player.getInventory().setItem(slot,item);
+                    player.sendMessage("§6[§7手提袋§6] §2 成功重命名为: §r"+input.replace("&","§"));
                 }
             }
         }
@@ -199,11 +210,11 @@ public class HandBag extends PluginBase implements Listener {
             pk.eid = key.get(player.getName());
             player.dataPacket(pk);
             key.remove(player.getName());
-            if(slot.containsKey(player.getName())){
-                player.getInventory().remove(player.getInventory()
-                        .getItem(slot.get(player.getName())));
-                slot.remove(player.getName());
-            }
+//            if(slot.containsKey(player.getName())){
+//                player.getInventory().remove(player.getInventory()
+//                        .getItem(slot.get(player.getName())));
+//                slot.remove(player.getName());
+//            }
         }
     }
 
