@@ -6,9 +6,13 @@ import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
+import cn.nukkit.item.Item;
 import cn.nukkit.network.protocol.ContainerOpenPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
+import com.smallaswater.handbag.HandBag;
 import com.smallaswater.handbag.items.BaseBag;
+
+import java.util.LinkedHashMap;
 
 /**
  * @author SmallasWater
@@ -35,12 +39,19 @@ public class BagInventory extends ContainerInventory implements BaseInventory{
     }
 
     @Override
+    public void onSlotChange(int index, Item before, boolean send) {
+        super.onSlotChange(index, before, send);
+
+    }
+
+    @Override
     public String getTitle() {
         if(holder instanceof BaseBag) {
             return ((BaseBag) holder).getItem().getCustomName();
         }
         return "无~~";
     }
+
 
     @Override
     public void onClose(Player who) {

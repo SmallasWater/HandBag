@@ -1,5 +1,5 @@
 name: HandBag
 main: com.smallaswater.handbag.HandBag
-version: 1.1.0
+version: 1.1.2
 api: 1.0.9
 load: STARTUP

@@ -15,6 +15,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.Config;
 import com.smallaswater.handbag.HandBag;
 import com.smallaswater.handbag.inventorys.BagInventory;
+import com.smallaswater.handbag.inventorys.BigBagInventory;
 import com.smallaswater.handbag.inventorys.SmallInventory;
 import com.smallaswater.handbag.items.bags.BigBag;
 import com.smallaswater.handbag.items.bags.SmallBag;
@@ -31,8 +32,9 @@ import java.util.Map;
  */
 public abstract class BaseBag implements InventoryHolder {
 
-    private String name;
+    private Player player;
 
+    private String name;
     private boolean canRemove;
 
     private Item item;
@@ -41,7 +43,7 @@ public abstract class BaseBag implements InventoryHolder {
 
     private boolean sneaking;
 
-    protected com.smallaswater.handbag.inventorys.BaseInventory inventory;
+    private com.smallaswater.handbag.inventorys.BaseInventory inventory;
 
     public final static String NAME_TAG = "bagItems";
 
@@ -51,14 +53,17 @@ public abstract class BaseBag implements InventoryHolder {
     }};
 
 
-    protected BaseBag(String name,BagType type, Item item){
+    protected BaseBag(Player player,String name,BagType type, Item item){
+        this.player = player;
         this.name = name;
         this.item = item;
         this.type = type;
         if(type == BagType.TO_SMALL){
             this.inventory = new SmallInventory(this, InventoryType.HOPPER);
-        }else{
+        }else if(type == BagType.SMALL){
             this.inventory = new BagInventory(this, InventoryType.CHEST);
+        }else{
+            this.inventory = new BigBagInventory(this);
         }
         CompoundTag tag = item.getNamedTag();
         if(tag.contains(BaseBag.NAME_TAG)) {
@@ -67,6 +72,14 @@ public abstract class BaseBag implements InventoryHolder {
                             .getNamedTag().getCompound(BaseBag.NAME_TAG))
             );
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public boolean isCanRemove() {
@@ -106,17 +119,23 @@ public abstract class BaseBag implements InventoryHolder {
     }
 
 
+    public static BaseBag getBaseBagByItem(Player player,Item target,Item item){
+        if(target.getNamedTag() == null){
+            return null;
+        }
+        return getBaseBagByItem(player,target.getNamedTag().getString("configName"), item);
+    }
 
-    public static BaseBag getBaseBagByItem(String name,Item item){
+    public static BaseBag getBaseBagByItem(Player player,String name,Item item){
         BaseBag baseBag = null;
         if(item.getNamedTag() != null){
             if(item.getNamedTag().contains(NAME_TAG)){
                 if("small".equalsIgnoreCase(item.getNamedTag().getString("bagType"))) {
-                    baseBag = new SmallBag(name,item);
+                    baseBag = new SmallBag(player,name,item);
                 }else if("big".equalsIgnoreCase(item.getNamedTag().getString("bagType"))){
-                    baseBag = new BigBag(name,item);
+                    baseBag = new BigBag(player,name,item);
                 }else{
-                    baseBag = new ToSmallBag(name, item);
+                    baseBag = new ToSmallBag(player,name, item);
                 }
                 baseBag.setCanRemove(item.getNamedTag().getBoolean("remove"));
             }
@@ -161,6 +180,7 @@ public abstract class BaseBag implements InventoryHolder {
         if(!item.hasCustomName()) {
             item.setCustomName(HandBag.getBag().getConfig().getString(item.getNamedTag().getString("configName")+".name"));
         }
+
         List<String> list = HandBag.getBag().getConfig().getStringList(item.getNamedTag().getString("configName")+".lore");
         LinkedList<String> lores = new LinkedList<>();
         if(list.size() == 0){
@@ -170,7 +190,9 @@ public abstract class BaseBag implements InventoryHolder {
             lores.add(s.replace("%size%",inventory.getInventory().getSize()+"")
                     .replace("%count%",inventory.getInventory().getContents().size()+""));
         }
-        item.getNamedTag().putCompound(NAME_TAG,toCompoundTagBySlot(inventory.getInventory().getContents()));
+        CompoundTag tag = item.getNamedTag();
+        tag.putCompound(NAME_TAG,toCompoundTagBySlot(inventory.getInventory().getContents()));
+        item.setCompoundTag(tag);
         item.setLore(lores.toArray(new String[0]));
         if(!item.hasEnchantments()) {
             item.addEnchantment(Enchantment.get(0));
@@ -204,14 +226,14 @@ public abstract class BaseBag implements InventoryHolder {
             item.getNamedTag().putString("configName",name);
             if(map.get("size").toString().equalsIgnoreCase(BagType.SMALL.getName())) {
                 item.setLore(toLore(name,BagType.SMALL.getSize()));
-                bag = new SmallBag(name,item);
+                bag = new SmallBag(null,name,item);
             }
             else if(map.get("size").toString().equalsIgnoreCase(BagType.BIG.getName())) {
                 item.setLore(toLore(name,BagType.BIG.getSize()));
-                bag = new BigBag(name,item);
+                bag = new BigBag(null,name,item);
             }else{
                 item.setLore(toLore(name,BagType.TO_SMALL.getSize()));
-                bag = new ToSmallBag(name,item);
+                bag = new ToSmallBag(null,name,item);
             }
             bag.setCanRemove(item.getNamedTag().getBoolean("remove"));
             bag.setSneaking(item.getNamedTag().getBoolean("sneaking-rename"));

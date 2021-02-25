@@ -1,5 +1,6 @@
 package com.smallaswater.handbag.items.bags;
 
+import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import com.smallaswater.handbag.items.BaseBag;
 import com.smallaswater.handbag.items.types.BagType;
@@ -9,7 +10,7 @@ import com.smallaswater.handbag.items.types.BagType;
  */
 public class SmallBag extends BaseBag {
 
-    public SmallBag(String name,Item item) {
-        super(name,BagType.SMALL, item);
+    public SmallBag(Player player,String name, Item item) {
+        super(player,name,BagType.SMALL, item);
     }
 }
