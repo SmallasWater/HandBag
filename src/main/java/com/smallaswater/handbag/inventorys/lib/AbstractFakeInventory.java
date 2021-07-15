@@ -2,6 +2,7 @@ package com.smallaswater.handbag.inventorys.lib;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.BlockID;
 import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
@@ -16,11 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 本类引用 SupermeMortal 的 FakeInventories 插件
  * @author SupermeMortal*/
 public abstract class AbstractFakeInventory extends ContainerInventory {
+
+    public long id;
+
     private static final BlockVector3 ZERO = new BlockVector3(0, 0, 0);
 
     private static final Map<Player, AbstractFakeInventory> OPEN = new ConcurrentHashMap<>();
@@ -31,6 +37,17 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
     AbstractFakeInventory(InventoryType type, InventoryHolder holder, String title) {
         super(holder, type);
         this.title = title == null ? type.getDefaultTitle() : title;
+    }
+
+    protected UpdateBlockPacket getDefaultPack(int id,BlockVector3 pos){
+        UpdateBlockPacket updateBlock = new UpdateBlockPacket();
+        updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(id, 0);
+        updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
+        updateBlock.x = pos.x;
+        updateBlock.y = pos.y;
+        updateBlock.z = pos.z;
+        return updateBlock;
+
     }
 
     @Override
@@ -67,15 +84,15 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
      * @return 方块坐标*/
     protected abstract List<BlockVector3> onOpenBlock(Player who);
 
+    private ExecutorService service = Executors.newSingleThreadExecutor();
     @Override
     public void onClose(Player who) {
         super.onClose(who);
         OPEN.remove(who, this);
         List<BlockVector3> blocks = blockPositions.get(who);
-
         for (int i = 0, size = blocks.size(); i < size; i++) {
             final int index = i;
-            Server.getInstance().getScheduler().scheduleDelayedTask(HandBag.getBag(),() -> {
+            service.execute(() -> {
                 Vector3 blockPosition = blocks.get(index).asVector3();
                 UpdateBlockPacket updateBlock = new UpdateBlockPacket();
                 updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.getLevel().getBlock(blockPosition).getFullId());
@@ -83,9 +100,8 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
                 updateBlock.x = blockPosition.getFloorX();
                 updateBlock.y = blockPosition.getFloorY();
                 updateBlock.z = blockPosition.getFloorZ();
-
                 who.dataPacket(updateBlock);
-            }, 2 + i, false);
+            });
         }
     }
 

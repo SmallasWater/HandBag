@@ -17,6 +17,7 @@ public enum  BagType {
      * 大容量
      * */
     BIG("big",54);
+
     protected int size;
 
     protected String name;

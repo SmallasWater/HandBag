@@ -6,6 +6,7 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
+import cn.nukkit.event.inventory.InventoryPickupItemEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
@@ -17,15 +18,14 @@ import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
-import cn.nukkit.network.protocol.AddEntityPacket;
+
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.plugin.PluginBase;
 import com.smallaswater.handbag.commands.HandBagUseCommand;
 import com.smallaswater.handbag.forms.WindowsListener;
-import com.smallaswater.handbag.inventorys.BagInventory;
-import com.smallaswater.handbag.inventorys.BigBagInventory;
+import com.smallaswater.handbag.inventorys.lib.AbstractFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
-import com.smallaswater.handbag.items.types.BagType;
+
 import com.smallaswater.handbag.utils.Tools;
 
 
@@ -138,17 +138,21 @@ public class HandBag extends PluginBase implements Listener {
      *
      * @return 无法存放的物品
      * */
-    public static Item[] addItemToHandBag(Player player,Item... item){
+    public static Item[] addItemToHandBag(Player player,boolean pickUp,Item... item){
         BaseBag bag;
-        Iterator<Item> slotItem = new ArrayList<>(Arrays.asList(item)).iterator();
+        ArrayList<Item> items = new ArrayList<>(Arrays.asList(item));
+        Iterator<Item> slotItem = items.iterator();
         LinkedHashMap<Integer,Item> handbags = Tools.getHandBagByInventory(player);
         if(handbags.size() == 0){
-            return new Item[0];
+            return item;
         }
         P:
         for(Map.Entry<Integer,Item> handBag: handbags.entrySet()) {
             bag = BaseBag.getBaseBagByItem(player,handBag.getValue().getNamedTag().getString("configName"), handBag.getValue());
             if (bag == null) {
+                continue;
+            }
+            if(pickUp && !bag.isAutoPickUp()){
                 continue;
             }
             if(bag.getInventory().slots.size() == bag.getType().getSize()){
@@ -165,10 +169,19 @@ public class HandBag extends PluginBase implements Listener {
             }
             player.getInventory().setItem(handBag.getKey(),bag.toItem());
         }
-        return (Item[]) Collections.singletonList(slotItem).toArray();
+        return items.toArray(new Item[0]);
     }
 
 
+    @EventHandler
+    public void onPickUp(InventoryPickupItemEvent event){
+        for(Player player: event.getViewers()) {
+            if(addItemToHandBag(player,true,event.getItem().getItem()).length == 0){
+                event.getItem().close();
+                event.setCancelled();
+            }
+        }
+    }
 
 
     public void openHandBag(Player player,int index,Item hand){
@@ -189,45 +202,15 @@ public class HandBag extends PluginBase implements Listener {
                 player.showFormWindow(simple,0x25565);
                 return;
             }
-            BaseInventory inventory = bag.getInventory();
-            if(bag.getType() == BagType.SMALL){
-                player.addWindow(sendInventory(player, 98, inventory));
-            }else if (bag.getType() == BagType.TO_SMALL){
-                player.addWindow(sendInventory(player,96,inventory));
-            }else{
-                long id = Entity.entityCount++;
-                ((BigBagInventory) inventory).id = id;
-                key.put(player.getName(),id);
-                player.level.addSound(player, Sound.RANDOM_CHESTOPEN);
-                player.addWindow(inventory);
-            }
+            AbstractFakeInventory inventory = bag.getInventory();
+            long id = ++Entity.entityCount;
+            inventory.id = id;
+            key.put(player.getName(),id);
+            player.level.addSound(player, Sound.RANDOM_CHESTOPEN);
+            player.addWindow(inventory);
         }
     }
 
-
-    private BaseInventory sendInventory(Player player, int type, BaseInventory inventory){
-        long id = Entity.entityCount++;
-        AddEntityPacket fakeEntity = new AddEntityPacket();
-        fakeEntity.entityUniqueId = id;
-        fakeEntity.entityRuntimeId = id;
-        fakeEntity.type = type;
-        fakeEntity.x = (float)player.x;
-        fakeEntity.y = (float)((player.y+3)>256 ? 256 : player.y+3);
-        fakeEntity.z = (float)player.z;
-        if(type == 98) {
-            fakeEntity.metadata.putString(4, inventory.getTitle())
-                    .putByte(44, 10).putInt(45, inventory.getSize());
-        }else{
-            fakeEntity.metadata.putString(4,  inventory.getTitle())
-                    .putByte(44, 8).putInt(45, InventoryType.HOPPER.getDefaultSize());
-        }
-        player.dataPacket(fakeEntity);
-        ((BagInventory) inventory).id = id;
-
-        key.put(player.getName(),id);
-        player.level.addSound(player, Sound.RANDOM_CHESTOPEN);
-        return inventory;
-    }
 
     @EventHandler
     public void onClose(InventoryCloseEvent event){
@@ -238,6 +221,7 @@ public class HandBag extends PluginBase implements Listener {
                 player.level.addSound(player, Sound.RANDOM_CHESTCLOSED);
                 Item item = ((BaseBag) holder).toItem();
                 int slot = this.slot.get(player.getName());
+                this.slot.remove(player.getName());
                 if(holder.getInventory().getContents().size() == 0) {
                     if (((BaseBag) holder).isCanRemove()) {
                         Item r = player.getInventory().getItem(slot);
@@ -247,12 +231,7 @@ public class HandBag extends PluginBase implements Listener {
                 }
                 player.getInventory().setItem(slot,item);
             }
-            if(key.containsKey(player.getName())){
-                RemoveEntityPacket pk = new RemoveEntityPacket();
-                pk.eid = key.get(player.getName());
-                player.dataPacket(pk);
-                key.remove(player.getName());
-            }
+            key.remove(player.getName());
         }
 
     }
@@ -292,10 +271,6 @@ public class HandBag extends PluginBase implements Listener {
             pk.eid = key.get(player.getName());
             player.dataPacket(pk);
             key.remove(player.getName());
-            if(this.slot.containsKey(player.getName())){
-                saveBagItem(player);
-            }
-
         }
     }
 
@@ -325,18 +300,5 @@ public class HandBag extends PluginBase implements Listener {
             }
         }
     }
-
-
-    private void saveBagItem(Player player) {
-        int slot = this.slot.get(player.getName());
-        Item item = player.getInventory().getItem(slot);
-        BaseBag bag = BaseBag.getBaseBagByItem(player,item.getNamedTag().getString("configName"), item);
-        if (bag == null) {
-            return;
-        }
-        player.getInventory().setItem(slot,bag.toItem());
-
-    }
-
 
 }

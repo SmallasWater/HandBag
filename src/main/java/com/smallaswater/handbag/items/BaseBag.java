@@ -1,9 +1,6 @@
 package com.smallaswater.handbag.items;
 
 import cn.nukkit.Player;
-import cn.nukkit.blockentity.BlockEntityChest;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.inventory.BaseInventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.item.Item;
@@ -13,10 +10,13 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.TextFormat;
 import com.smallaswater.handbag.HandBag;
 import com.smallaswater.handbag.inventorys.BagInventory;
+import com.smallaswater.handbag.inventorys.BaseInventory;
 import com.smallaswater.handbag.inventorys.BigBagInventory;
 import com.smallaswater.handbag.inventorys.SmallInventory;
+import com.smallaswater.handbag.inventorys.lib.AbstractFakeInventory;
 import com.smallaswater.handbag.items.bags.BigBag;
 import com.smallaswater.handbag.items.bags.SmallBag;
 import com.smallaswater.handbag.items.bags.ToSmallBag;
@@ -37,19 +37,21 @@ public abstract class BaseBag implements InventoryHolder {
     private String name;
     private boolean canRemove;
 
+    private boolean autoPickUp = true;
     private Item item;
 
     private BagType type;
 
     private boolean sneaking;
 
-    private com.smallaswater.handbag.inventorys.BaseInventory inventory;
+    private BaseInventory inventory;
 
     public final static String NAME_TAG = "bagItems";
 
     private LinkedList<String> lores = new LinkedList<String>(){{
         add("§r§7\n容量: §e%size%  §7当前:§e %count%");
         add("§r§7\n右键/点击地面 §e开启");
+        add("§r§7\n自动拾取 %key%");
     }};
 
 
@@ -94,13 +96,21 @@ public abstract class BaseBag implements InventoryHolder {
         return item;
     }
 
+    public boolean isAutoPickUp() {
+        return autoPickUp;
+    }
+
+    public void setAutoPickUp(boolean autoPickUp) {
+        this.autoPickUp = autoPickUp;
+    }
+
     public BagType getType() {
         return type;
     }
 
     @Override
-    public BaseInventory getInventory() {
-        return (BaseInventory) inventory.getInventory();
+    public AbstractFakeInventory getInventory() {
+        return (AbstractFakeInventory) inventory.getInventory();
     }
 
 
@@ -137,8 +147,11 @@ public abstract class BaseBag implements InventoryHolder {
                 }else{
                     baseBag = new ToSmallBag(player,name, item);
                 }
+                baseBag.setAutoPickUp(item.getNamedTag().getBoolean("auto-pickup"));
                 baseBag.setCanRemove(item.getNamedTag().getBoolean("remove"));
+                baseBag.setSneaking(item.getNamedTag().getBoolean("sneaking-rename"));
             }
+
         }
         return baseBag;
     }
@@ -186,11 +199,14 @@ public abstract class BaseBag implements InventoryHolder {
         if(list.size() == 0){
             list = this.lores;
         }
+        String pick = autoPickUp?"&a开启":"&c关闭";
         for(String s:list){
-            lores.add(s.replace("%size%",inventory.getInventory().getSize()+"")
-                    .replace("%count%",inventory.getInventory().getContents().size()+""));
+            lores.add(TextFormat.colorize('&',s.replace("%key%",pick)
+                    .replace("%size%",inventory.getInventory().getSize()+"")
+                    .replace("%count%",inventory.getInventory().getContents().size()+"")));
         }
         CompoundTag tag = item.getNamedTag();
+        tag.putBoolean("auto-pickup",autoPickUp);
         tag.putCompound(NAME_TAG,toCompoundTagBySlot(inventory.getInventory().getContents()));
         item.setCompoundTag(tag);
         item.setLore(lores.toArray(new String[0]));
@@ -221,20 +237,25 @@ public abstract class BaseBag implements InventoryHolder {
             if(map.containsKey("sneaking-rename")){
                 reset = Boolean.valueOf(map.get("sneaking-rename").toString());
             }
+            boolean pickup = true;
+            if(map.containsKey("auto-pickup")){
+                pickup = Boolean.valueOf(map.get("auto-pickup").toString());
+            }
+            item.getNamedTag().putBoolean("auto-pickup",pickup);
             item.getNamedTag().putBoolean("sneaking-rename",reset);
             item.getNamedTag().putBoolean("remove",remove);
             item.getNamedTag().putString("configName",name);
             if(map.get("size").toString().equalsIgnoreCase(BagType.SMALL.getName())) {
-                item.setLore(toLore(name,BagType.SMALL.getSize()));
+                item.setLore(toLore(name,BagType.SMALL.getSize(),pickup));
                 bag = new SmallBag(null,name,item);
-            }
-            else if(map.get("size").toString().equalsIgnoreCase(BagType.BIG.getName())) {
-                item.setLore(toLore(name,BagType.BIG.getSize()));
+            }else if(map.get("size").toString().equalsIgnoreCase(BagType.BIG.getName())) {
+                item.setLore(toLore(name,BagType.BIG.getSize(),pickup));
                 bag = new BigBag(null,name,item);
             }else{
-                item.setLore(toLore(name,BagType.TO_SMALL.getSize()));
+                item.setLore(toLore(name,BagType.TO_SMALL.getSize(),pickup));
                 bag = new ToSmallBag(null,name,item);
             }
+            bag.setAutoPickUp(pickup);
             bag.setCanRemove(item.getNamedTag().getBoolean("remove"));
             bag.setSneaking(item.getNamedTag().getBoolean("sneaking-rename"));
             bags.add(bag);
@@ -252,12 +273,14 @@ public abstract class BaseBag implements InventoryHolder {
         return sneaking;
     }
 
-    private static String[] toLore(String name, int size) {
+    private static String[] toLore(String name, int size,boolean autoPickUp) {
         List<String> list = HandBag.getBag().getConfig().getStringList(name+".lore");
         LinkedList<String> lore = new LinkedList<>();
         for (String s : list) {
-            lore.add(s.replace("%size%", size +"")
-                    .replace("%count%", "0"));
+            lore.add(TextFormat.colorize('&',s.replace("%size%", size +"")
+                    .replace("%count%", "0")
+                    .replace("%key%",autoPickUp?"&a开启":"&c关闭"))
+            );
         }
         return lore.toArray(new String[0]);
     }

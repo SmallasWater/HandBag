@@ -13,6 +13,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.utils.TextFormat;
 import com.smallaswater.handbag.HandBag;
+import com.smallaswater.handbag.items.BaseBag;
 import com.smallaswater.handbag.utils.Tools;
 
 import java.util.LinkedHashMap;
@@ -66,6 +67,13 @@ public class WindowsListener implements Listener {
                             FormWindowCustom simple = new FormWindowCustom("重命名");
                             simple.addElement(new ElementInput("请输入新的名称 [&是颜色符号~]"));
                             player.showFormWindow(simple,0x25565);
+                            break;
+                        case 3:
+                            BaseBag baseBag = BaseBag.getBaseBagByItem(player,clickItem.get(player).getValue().getNamedTag().getString("configName"),clickItem.get(player).getValue());
+                            baseBag.setAutoPickUp(!baseBag.isAutoPickUp());
+                            player.getInventory().setItem(clickItem.get(player).getKey(),baseBag.toItem());
+                            player.sendMessage(TextFormat.colorize('&',"&e[手提袋] &a自动拾取: "+(baseBag.isAutoPickUp()?"&a开启":"&c关闭")));
+
                             break;
                         default:
                             CreateWindow.sendMenu(player);

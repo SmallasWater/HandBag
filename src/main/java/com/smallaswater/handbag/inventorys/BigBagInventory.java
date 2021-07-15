@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
  */
 public class BigBagInventory extends DoubleChestFakeInventory implements BaseInventory{
 
-    public long id;
 
     public BigBagInventory(InventoryHolder holder) {
         super(holder);

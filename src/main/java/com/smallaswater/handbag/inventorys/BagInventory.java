@@ -10,6 +10,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.network.protocol.ContainerOpenPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import com.smallaswater.handbag.HandBag;
+import com.smallaswater.handbag.inventorys.lib.ChestFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
 
 import java.util.LinkedHashMap;
@@ -17,13 +18,14 @@ import java.util.LinkedHashMap;
 /**
  * @author SmallasWater
  */
-public class BagInventory extends ContainerInventory implements BaseInventory{
+public class BagInventory extends ChestFakeInventory implements BaseInventory{
 
-    public long id;
+
 
 
     public BagInventory(InventoryHolder holder, InventoryType type) {
-        super(holder, type);
+        super(type, holder,null);
+        this.setName(((BaseBag) holder).getItem().getCustomName());
     }
 
 
@@ -34,7 +36,6 @@ public class BagInventory extends ContainerInventory implements BaseInventory{
         pk.windowId = who.getWindowId(this);
         pk.entityId = id;
         who.dataPacket(pk);
-
         super.onOpen(who);
     }
 

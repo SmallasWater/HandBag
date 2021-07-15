@@ -56,10 +56,22 @@ public class CreateWindow {
         FormWindowSimple simple = new FormWindowSimple("仓库 --- "+clickItem.getValue().getCustomName(),"");
         simple.addButton(new ElementButton("开启背包",new ElementButtonImageData("path",
                 "textures/ui/icon_expand")));
+
+
         simple.addButton(new ElementButton("移动位置",new ElementButtonImageData("path",
                 "textures/ui/dev_glyph_color")));
         simple.addButton(new ElementButton("重命名",new ElementButtonImageData("path",
                 "textures/ui/book_metatag_default")));
+        String key = "关闭自动拾取";
+        String path = "common-classic_toggle_checked_state";
+        if(clickItem.getValue().getNamedTag().contains("auto-pickup")){
+            if(!clickItem.getValue().getNamedTag().getBoolean("auto-pickup")){
+                key = "开启自动拾取";
+                path = "common-classic_toggle_unchecked_state";
+            }
+        }
+        simple.addButton(new ElementButton(key,new ElementButtonImageData("path",
+                "textures/ui/"+path)));
         simple.addButton(new ElementButton("返回",new ElementButtonImageData("path",
                 "textures/ui/refresh_light")));
         player.showFormWindow(simple,CLICK_MENU_ID);
