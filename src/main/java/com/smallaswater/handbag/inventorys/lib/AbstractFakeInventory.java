@@ -31,7 +31,7 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
 
     private static final Map<Player, AbstractFakeInventory> OPEN = new ConcurrentHashMap<>();
 
-    final Map<Player, List<BlockVector3>> blockPositions = new HashMap<>();
+    final Map<String, List<BlockVector3>> blockPositions = new HashMap<>();
     private String title;
 
     AbstractFakeInventory(InventoryType type, InventoryHolder holder, String title) {
@@ -55,11 +55,11 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
 //        checkForClosed();
         this.viewers.add(who);
         if (OPEN.putIfAbsent(who, this) != null) {
-            throw new IllegalStateException("Inventory was already open");
+            return;
         }
 
         List<BlockVector3> blocks = onOpenBlock(who);
-        blockPositions.put(who, blocks);
+        blockPositions.put(who.getName(), blocks);
 
         onFakeOpen(who, blocks);
     }
@@ -89,20 +89,24 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
     public void onClose(Player who) {
         super.onClose(who);
         OPEN.remove(who, this);
-        List<BlockVector3> blocks = blockPositions.get(who);
-        for (int i = 0, size = blocks.size(); i < size; i++) {
-            final int index = i;
-            service.execute(() -> {
-                Vector3 blockPosition = blocks.get(index).asVector3();
-                UpdateBlockPacket updateBlock = new UpdateBlockPacket();
-                updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.getLevel().getBlock(blockPosition).getFullId());
-                updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
-                updateBlock.x = blockPosition.getFloorX();
-                updateBlock.y = blockPosition.getFloorY();
-                updateBlock.z = blockPosition.getFloorZ();
-                who.dataPacket(updateBlock);
-            });
-        }
+        try {
+            if (blockPositions.containsKey(who.getName())) {
+                List<BlockVector3> blocks = blockPositions.get(who.getName());
+                for (int i = 0, size = blocks.size(); i < size; i++) {
+                    final int index = i;
+                    service.execute(() -> {
+                        Vector3 blockPosition = blocks.get(index).asVector3();
+                        UpdateBlockPacket updateBlock = new UpdateBlockPacket();
+                        updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.getLevel().getBlock(blockPosition).getFullId());
+                        updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
+                        updateBlock.x = blockPosition.getFloorX();
+                        updateBlock.y = blockPosition.getFloorY();
+                        updateBlock.z = blockPosition.getFloorZ();
+                        who.dataPacket(updateBlock);
+                    });
+                }
+            }
+        }catch (Exception ignore){}
     }
 
 

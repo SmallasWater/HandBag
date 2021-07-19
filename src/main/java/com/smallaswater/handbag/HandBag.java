@@ -175,8 +175,13 @@ public class HandBag extends PluginBase implements Listener {
 
     @EventHandler
     public void onPickUp(InventoryPickupItemEvent event){
-        for(Player player: event.getViewers()) {
-            if(addItemToHandBag(player,true,event.getItem().getItem()).length == 0){
+        if(event.getInventory() instanceof PlayerInventory) {
+            PlayerInventory inventory = (PlayerInventory) event.getInventory();
+
+            if (Tools.isHandBag(event.getItem().getItem())) {
+                return;
+            }
+            if (addItemToHandBag((Player) inventory.getHolder(), true, event.getItem().getItem()).length == 0) {
                 event.getItem().close();
                 event.setCancelled();
             }
