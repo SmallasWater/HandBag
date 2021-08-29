@@ -60,6 +60,7 @@ public abstract class BaseBag implements InventoryHolder {
         this.name = name;
         this.item = item;
         this.type = type;
+
         if(type == BagType.TO_SMALL){
             this.inventory = new SmallInventory(this, InventoryType.HOPPER);
         }else if(type == BagType.SMALL){
@@ -67,6 +68,7 @@ public abstract class BaseBag implements InventoryHolder {
         }else{
             this.inventory = new BigBagInventory(this);
         }
+        inventory.setPlayer(player);
         CompoundTag tag = item.getNamedTag();
         if(tag.contains(BaseBag.NAME_TAG)) {
             this.inventory.getInventory().setContents(

@@ -55,6 +55,18 @@ public class BigBagInventory extends DoubleChestFakeInventory implements BaseInv
         super.onClose(who);
     }
 
+    private Player player;
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
 
     @Override
     public Inventory getInventory() {

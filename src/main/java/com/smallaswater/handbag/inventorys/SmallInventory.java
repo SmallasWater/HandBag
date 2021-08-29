@@ -17,6 +17,7 @@ import com.smallaswater.handbag.items.BaseBag;
  */
 public class SmallInventory extends HopperFakeInventory implements BaseInventory {
 
+    private Player player;
 
     public SmallInventory(InventoryHolder holder, InventoryType type) {
         super(type,holder,null);
@@ -67,4 +68,13 @@ public class SmallInventory extends HopperFakeInventory implements BaseInventory
     }
 
 
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
 }

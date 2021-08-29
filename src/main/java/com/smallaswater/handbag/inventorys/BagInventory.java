@@ -22,13 +22,22 @@ public class BagInventory extends ChestFakeInventory implements BaseInventory{
 
 
 
-
     public BagInventory(InventoryHolder holder, InventoryType type) {
         super(type, holder,null);
         this.setName(((BaseBag) holder).getItem().getCustomName());
     }
 
+    private Player player;
 
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
 
     @Override
     public void onOpen(Player who) {
