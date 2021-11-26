@@ -1,7 +1,6 @@
 package com.smallaswater.handbag;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -22,13 +21,14 @@ import cn.nukkit.level.Sound;
 
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.scheduler.AsyncTask;
+import cn.nukkit.utils.Config;
 import com.smallaswater.handbag.commands.HandBagUseCommand;
 import com.smallaswater.handbag.forms.WindowsListener;
 import com.smallaswater.handbag.inventorys.BaseInventory;
 import com.smallaswater.handbag.inventorys.lib.AbstractFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
 
+import com.smallaswater.handbag.task.CheckTask;
 import com.smallaswater.handbag.utils.Tools;
 
 
@@ -51,19 +51,31 @@ public class HandBag extends PluginBase implements Listener {
 
     private static final ThreadPoolExecutor THREAD_POOL = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
-
+    @Override
+    public void onLoad() {
+        bag = this;
+    }
 
     @Override
     public void onEnable() {
-        bag = this;
         this.saveDefaultConfig();
+        this.saveResource("HandBagConfig.yml");
         this.reloadConfig();
-        this.getLogger().info("手提包加载成功...");
         this.register();
+
+        if (this.getConfig().getBoolean("自动检查.启用")) {
+            this.getServer().getScheduler().scheduleRepeatingTask(
+                    this,
+                    new CheckTask(this),
+                    this.getConfig().getInt("自动检查.间隔(s)", 60)
+            );
+        }
+
+        this.getLogger().info("手提包加载成功...");
     }
 
     private void register() {
-        LinkedList<BaseBag> baseBag = BaseBag.registerItem(getConfig());
+        LinkedList<BaseBag> baseBag = BaseBag.registerItem(new Config(this.getDataFolder() + "/HandBagConfig.yml", Config.YAML));
         for(BaseBag baseBag1:baseBag){
             if (!Item.isCreativeItem(baseBag1.getItem())) {
                 Item.addCreativeItem(baseBag1.getItem());

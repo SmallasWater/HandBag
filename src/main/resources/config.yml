@@ -1,24 +1,3 @@
-default:
-  item: "130:0"
-  name: "§r§e战利品袋"
-  lore:
-    - "§r§7\n容量: §e%size%  §7当前:§e %count%"
-    - "§r§7\n右键/点击地面 §e开启"
-    - "§r§7\n自动拾取 %key%"
-  #支持 big(54) small (27) soSmall (5)
-  size: soSmall
-  remove: true
-  sneaking-rename: false
-  auto-pickup: true
-small:
-  item: "130:0"
-  name: "§r§e手提袋"
-  lore:
-    - "§r§7\n容量: §e%size%  §7当前:§e %count%"
-    - "§r§7\n右键/点击地面 §e开启"
-    - "§r§7\n自动拾取 %key%"
-  #支持 big(54) small (27) soSmall (5)
-  size: small
-  remove: false
-  sneaking-rename: false
-  auto-pickup: true
+自动检查:
+  启用: false
+  间隔(s): 60
