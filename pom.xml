@@ -12,16 +12,14 @@
             <groupId>cn.nukkit</groupId>
             <artifactId>nukkit</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath> F:/Nukkit驱动/nukkit_1.16.210_b843.jar</systemPath>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>tips</groupId>
             <artifactId>tip</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath> F:/Nukkit开服/plugins/Tips_v1.7.0.jar</systemPath>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
     <build>
