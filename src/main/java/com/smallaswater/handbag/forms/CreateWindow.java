@@ -39,7 +39,8 @@ public class CreateWindow {
         BaseBag bag;
         for(Map.Entry<Integer, Item> itemEntry : Tools.getHandBagByInventory(player).entrySet()){
             bag = BaseBag.getBaseBagByItem(player,itemEntry.getValue().getNamedTag().getString("configName"),itemEntry.getValue());
-            simple.addButton(new ElementButton(TextFormat.colorize('&',"&7<#&2"+itemEntry.getKey()+"&7> &r"+itemEntry.getValue().getCustomName()+"\n &7["+Tools.getIntegerOrMaxColor(bag.getInventory().slots.size(),bag.getType().getSize()) +bag.getInventory().slots.size()+"&7/&a"+bag.getType().getSize()+"&7]")
+            simple.addButton(new ElementButton(TextFormat.colorize('&',"&7<#&2"+itemEntry.getKey()+"&7> &r"
+                    +itemEntry.getValue().getCustomName()+"\n &7["+Tools.getIntegerOrMaxColor(bag.getInventory().slots.size(),bag.getType().getSize()) +bag.getInventory().slots.size()+"&7/&a"+bag.getType().getSize()+"&7]")
             ,new ElementButtonImageData("path","textures/ui/inventory_icon")));
         }
         if(simple.getButtons().size() == 0){

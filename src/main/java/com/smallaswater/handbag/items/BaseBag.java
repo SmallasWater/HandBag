@@ -46,11 +46,11 @@ public abstract class BaseBag implements InventoryHolder {
 
     private BaseInventory inventory;
 
+
     public final static String NAME_TAG = "bagItems";
 
     private LinkedList<String> lores = new LinkedList<String>(){{
         add("§r§7\n容量: §e%size%  §7当前:§e %count%");
-        add("§r§7\n右键/点击地面 §e开启");
         add("§r§7\n自动拾取 %key%");
     }};
 
@@ -182,9 +182,7 @@ public abstract class BaseBag implements InventoryHolder {
 
     }
 
-    public static CompoundTag getChestCompoundTag(Position pos){
-       return (new CompoundTag("")).putList(new ListTag<>("Items")).putString("id", "Chest").putInt("x", (int)pos.x).putInt("y", (int)pos.y).putInt("z", (int)pos.z);
-    }
+
 
     public Map<Integer,Item> toSlotByItem(CompoundTag tag){
         LinkedHashMap<Integer,Item> items = new LinkedHashMap<>();

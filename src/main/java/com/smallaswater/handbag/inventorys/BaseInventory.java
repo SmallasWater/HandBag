@@ -2,6 +2,7 @@ package com.smallaswater.handbag.inventorys;
 
 import cn.nukkit.Player;
 import cn.nukkit.inventory.InventoryHolder;
+import com.smallaswater.handbag.items.BaseBag;
 
 /**
  * @author SmallasWater
@@ -18,4 +19,6 @@ public interface BaseInventory extends InventoryHolder {
      * @return 玩家
      * */
     Player getPlayer();
+
+
 }

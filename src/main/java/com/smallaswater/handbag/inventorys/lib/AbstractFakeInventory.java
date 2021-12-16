@@ -114,7 +114,10 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
 
     }
 
-
+    @Override
+    public InventoryHolder getHolder() {
+        return holder;
+    }
 
     @Override
     public String getTitle() {

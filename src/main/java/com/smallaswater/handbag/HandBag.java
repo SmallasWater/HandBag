@@ -27,7 +27,7 @@ import com.smallaswater.handbag.inventorys.BaseInventory;
 import com.smallaswater.handbag.inventorys.lib.AbstractFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
 
-import com.smallaswater.handbag.thread.CheckTask;
+
 import com.smallaswater.handbag.utils.Tools;
 
 
@@ -40,7 +40,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author SmallasWater
  */
 public class HandBag extends PluginBase implements Listener {
-
 
 
 
@@ -58,23 +57,17 @@ public class HandBag extends PluginBase implements Listener {
     public void onEnable() {
         bag = this;
         this.saveDefaultConfig();
-        this.saveResource("HandBagConfig.yml");
         this.reloadConfig();
 
-        if (this.getConfig().getBoolean("自动检查.启用",true)) {
-            this.getServer().getScheduler().scheduleRepeatingTask(
-                    this,
-                    new CheckTask(this),
-                    this.getConfig().getInt("自动检查.间隔(s)", 40)
-            );
-        }
+
 
         this.getLogger().info("手提包加载成功...");
         this.register();
     }
 
+
     private void register() {
-        LinkedList<BaseBag> baseBag = BaseBag.registerItem(new Config(this.getDataFolder() + "/HandBagConfig.yml", Config.YAML));
+        LinkedList<BaseBag> baseBag = BaseBag.registerItem(getConfig());
         for(BaseBag baseBag1:baseBag){
             if (!Item.isCreativeItem(baseBag1.getItem())) {
                 Item.addCreativeItem(baseBag1.getItem());
@@ -91,25 +84,22 @@ public class HandBag extends PluginBase implements Listener {
 
 
 
-//    @EventHandler(priority = EventPriority.MONITOR)
-//    public void onPlayerInteractEvent(PlayerInteractEvent event){
-//        if(event.isCancelled()){
-//            return;
-//        }
-//
-//
-//        Player player = event.getPlayer();
-//        Item hand = event.getItem();
-//        if(hand == null){
-//            return;
-//        }
-//        if(Tools.isHandBag(hand)) {
-//
-//            event.setCancelled();
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerInteractEvent(PlayerInteractEvent event){
+        if(event.isCancelled()){
+            return;
+        }
+
+        Item hand = event.getItem();
+        if(hand == null){
+            return;
+        }
+        if(Tools.isHandBag(hand)) {
+            event.setCancelled();
 //            openHandBag(player,player.getInventory().getHeldItemIndex(),hand);
-//        }
-//
-//    }
+        }
+
+    }
 
     /**
      * 获取玩家背包内所有的手提包
@@ -218,7 +208,6 @@ public class HandBag extends PluginBase implements Listener {
 
     public void openHandBag(Player player,int index,Item hand){
         if(Tools.isHandBag(hand)){
-
             if(!timing.containsKey(player)){
                 timing.put(player,System.currentTimeMillis());
             }else{
@@ -290,11 +279,9 @@ public class HandBag extends PluginBase implements Listener {
             InventoryHolder holder = event.getInventory().getHolder();
             if(holder instanceof BaseBag) {
                 player.level.addSound(player, Sound.RANDOM_CHESTCLOSED);
-                saveSolt(player, (BaseBag) holder);
-
+                saveSolt(player, ((BaseBag) holder).getItem());
             }
-            this.slot.remove(player.getName());
-            key.remove(player.getName());
+
 
         }
 
@@ -357,7 +344,7 @@ public class HandBag extends PluginBase implements Listener {
                         }
                     }
                 }
-                if (inventory instanceof com.smallaswater.handbag.inventorys.BaseInventory) {
+                if (inventory instanceof BaseInventory) {
                     Player player = ((BaseInventory) inventory).getPlayer();
                     if (item.getNamedTag() != null) {
                         if (item.getNamedTag().contains(BaseBag.NAME_TAG)) {
@@ -367,33 +354,39 @@ public class HandBag extends PluginBase implements Listener {
                     }
                     InventoryHolder holder = inventory.getHolder();
                     if(holder instanceof BaseBag) {
-                        saveSolt(player, (BaseBag) holder);
+                        saveSolt(player, ((BaseBag) holder).getItem());
                     }
                 }
             }
         }
     }
-    private void saveSolt(Player player,BaseBag holder){
+    private void saveSolt(Player player,Item holder){
         THREAD_POOL.execute(() -> {
             try {
                 Thread.sleep(30);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Item i = holder.toItem();
-            if(!HandBag.getBag().slot.containsKey(player.getName())){
-                return;
-            }
-            int slot = HandBag.getBag().slot.get(player.getName());
-            if (holder.getInventory().getContents().size() == 0) {
-                if (holder.isCanRemove()) {
-                    Item r = player.getInventory().getItem(slot);
-                    player.getInventory().removeItem(r);
+            if(Tools.isHandBag(holder)){
+                BaseBag bag = BaseBag.getBaseBagByItem(player,holder.getNamedTag().getString("configName"),holder);
+                Item i = bag.toItem();
+                if(!HandBag.getBag().slot.containsKey(player.getName())){
                     return;
+                }
+                int slot = HandBag.getBag().slot.get(player.getName());
+                if (bag.getInventory().getContents().size() == 0) {
+                    if (bag.isCanRemove()) {
+                        Item r = player.getInventory().getItem(slot);
+                        player.getInventory().removeItem(r);
+                        return;
+                    }
+                }
+                if(player.getInventory().setItem(slot, i)){
+                    this.slot.remove(player.getName());
+                    key.remove(player.getName());
                 }
             }
 
-            player.getInventory().setItem(slot, i);
         });
 
     }
