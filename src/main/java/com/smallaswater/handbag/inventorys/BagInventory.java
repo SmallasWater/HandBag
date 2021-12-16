@@ -41,10 +41,10 @@ public class BagInventory extends ChestFakeInventory implements BaseInventory{
 
     @Override
     public void onOpen(Player who) {
-        ContainerOpenPacket pk = new ContainerOpenPacket();
-        pk.windowId = who.getWindowId(this);
-        pk.entityId = id;
-        who.dataPacket(pk);
+//        ContainerOpenPacket pk = new ContainerOpenPacket();
+//        pk.windowId = who.getWindowId(this);
+//        pk.entityId = id;
+//        who.dataPacket(pk);
         super.onOpen(who);
     }
 
@@ -68,9 +68,10 @@ public class BagInventory extends ChestFakeInventory implements BaseInventory{
         if(holder instanceof BaseBag){
             ((BaseBag) holder).close();
         }
-        RemoveEntityPacket pk = new RemoveEntityPacket();
-        pk.eid = id;
-        who.dataPacket(pk);
+
+//        RemoveEntityPacket pk = new RemoveEntityPacket();
+//        pk.eid = id;
+//        who.dataPacket(pk);
 
         super.onClose(who);
     }

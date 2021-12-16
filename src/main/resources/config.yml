@@ -3,7 +3,6 @@ default:
   name: "§r§e战利品袋"
   lore:
     - "§r§7\n容量: §e%size%  §7当前:§e %count%"
-    - "§r§7\n右键/点击地面 §e开启"
     - "§r§7\n自动拾取 %key%"
   #支持 big(54) small (27) soSmall (5)
   size: soSmall
@@ -15,7 +14,6 @@ small:
   name: "§r§e手提袋"
   lore:
     - "§r§7\n容量: §e%size%  §7当前:§e %count%"
-    - "§r§7\n右键/点击地面 §e开启"
     - "§r§7\n自动拾取 %key%"
   #支持 big(54) small (27) soSmall (5)
   size: small

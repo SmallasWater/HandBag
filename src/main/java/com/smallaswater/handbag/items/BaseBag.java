@@ -68,14 +68,22 @@ public abstract class BaseBag implements InventoryHolder {
         }else{
             this.inventory = new BigBagInventory(this);
         }
-        inventory.setPlayer(player);
+        this.inventory.setPlayer(player);
         CompoundTag tag = item.getNamedTag();
         if(tag.contains(BaseBag.NAME_TAG)) {
             this.inventory.getInventory().setContents(
                     toSlotByItem(getItem()
                             .getNamedTag().getCompound(BaseBag.NAME_TAG))
             );
+            if(player != null){
+                this.inventory.getInventory().sendContents(player);
+            }
         }
+    }
+
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public String getName() {
@@ -124,6 +132,7 @@ public abstract class BaseBag implements InventoryHolder {
 
 
     public void close() {
+
         if(item.getNamedTag() != null) {
             CompoundTag tag = toCompoundTagBySlot(inventory.getInventory().getContents());
             this.item.getNamedTag().putCompound(NAME_TAG,tag);

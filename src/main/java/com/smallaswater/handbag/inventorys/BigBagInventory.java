@@ -36,11 +36,11 @@ public class BigBagInventory extends DoubleChestFakeInventory implements BaseInv
     @Override
     public void onOpen(Player who) {
         super.onOpen(who);
-        ContainerOpenPacket pk = new ContainerOpenPacket();
-        pk.windowId = who.getWindowId(this);
-        pk.entityId = id;
-        pk.type = InventoryType.DOUBLE_CHEST.getNetworkType();
-        who.dataPacket(pk);
+//        ContainerOpenPacket pk = new ContainerOpenPacket();
+//        pk.windowId = who.getWindowId(this);
+//        pk.entityId = id;
+//        pk.type = InventoryType.DOUBLE_CHEST.getNetworkType();
+//        who.dataPacket(pk);
     }
 
     @Override
@@ -48,9 +48,10 @@ public class BigBagInventory extends DoubleChestFakeInventory implements BaseInv
         if(holder instanceof BaseBag){
             ((BaseBag) holder).close();
         }
-        RemoveEntityPacket pk = new RemoveEntityPacket();
-        pk.eid = id;
-        who.dataPacket(pk);
+
+//        RemoveEntityPacket pk = new RemoveEntityPacket();
+//        pk.eid = id;
+//        who.dataPacket(pk);
 
         super.onClose(who);
     }

@@ -37,7 +37,7 @@ public class HopperFakeInventory extends AbstractFakeInventory{
 
     @Override
     protected List<BlockVector3> onOpenBlock(Player who) {
-        BlockVector3 blockPosition = new BlockVector3((int) who.x, ((int) who.y) + 2, (int) who.z);
+        BlockVector3 blockPosition = new BlockVector3((int) who.x, ((int) who.y) - 3, (int) who.z);
 
         placeChest(who, blockPosition);
 

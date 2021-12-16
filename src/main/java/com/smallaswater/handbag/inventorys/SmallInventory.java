@@ -26,11 +26,11 @@ public class SmallInventory extends HopperFakeInventory implements BaseInventory
 
     @Override
     public void onOpen(Player who) {
-        ContainerOpenPacket pk = new ContainerOpenPacket();
-        pk.windowId = who.getWindowId(this);
-        pk.entityId = id;
-        pk.type = InventoryType.HOPPER.getNetworkType();
-        who.dataPacket(pk);
+//        ContainerOpenPacket pk = new ContainerOpenPacket();
+//        pk.windowId = who.getWindowId(this);
+//        pk.entityId = id;
+//        pk.type = InventoryType.HOPPER.getNetworkType();
+//        who.dataPacket(pk);
 
         super.onOpen(who);
     }
@@ -55,9 +55,10 @@ public class SmallInventory extends HopperFakeInventory implements BaseInventory
         if(holder instanceof BaseBag){
             ((BaseBag) holder).close();
         }
-        RemoveEntityPacket pk = new RemoveEntityPacket();
-        pk.eid = id;
-        who.dataPacket(pk);
+
+//        RemoveEntityPacket pk = new RemoveEntityPacket();
+//        pk.eid = id;
+//        who.dataPacket(pk);
 
         super.onClose(who);
     }

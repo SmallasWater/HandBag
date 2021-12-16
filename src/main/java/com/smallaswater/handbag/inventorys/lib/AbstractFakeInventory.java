@@ -29,9 +29,9 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
 
     private static final BlockVector3 ZERO = new BlockVector3(0, 0, 0);
 
-    private static final Map<Player, AbstractFakeInventory> OPEN = new ConcurrentHashMap<>();
+    public static final Map<Player, AbstractFakeInventory> OPEN = new ConcurrentHashMap<>();
 
-    final Map<String, List<BlockVector3>> blockPositions = new HashMap<>();
+    public Map<String, List<BlockVector3>> blockPositions = new HashMap<>();
     private String title;
 
     AbstractFakeInventory(InventoryType type, InventoryHolder holder, String title) {
@@ -106,7 +106,12 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
                     });
                 }
             }
-        }catch (Exception ignore){}
+        }catch (Exception e){
+            this.clearAll();
+            e.printStackTrace();
+
+        }
+
     }
 
 
