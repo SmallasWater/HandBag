@@ -6,7 +6,7 @@
 
     <groupId>com.smallaswater.handbag</groupId>
     <artifactId>HandBag</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3-SNAPSHOT</version>
 
     <repositories>
         <repository>
