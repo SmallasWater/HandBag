@@ -43,7 +43,7 @@ public class DoubleChestFakeInventory extends ChestFakeInventory{
 
     @Override
     protected List<BlockVector3> onOpenBlock(Player who) {
-        int y = who.getY() > 128 ? who.getFloorY() - 3 : who.getFloorY() + 3;
+        int y = who.getY() > 250 ? who.getFloorY() - 3 : who.getFloorY() + 3;
         BlockVector3 blockPositionA = new BlockVector3((int) who.x, y, (int) who.z);
         BlockVector3 blockPositionB = blockPositionA.add(1, 0, 0);
 

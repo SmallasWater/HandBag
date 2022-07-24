@@ -40,7 +40,7 @@ public class ChestFakeInventory extends AbstractFakeInventory{
 
     @Override
     protected List<BlockVector3> onOpenBlock(Player who) {
-        int y = who.getY() > 128 ? who.getFloorY() - 3 : who.getFloorY() + 3;
+        int y = who.getY() > 250 ? who.getFloorY() - 3 : who.getFloorY() + 3;
         BlockVector3 blockPosition = new BlockVector3((int) who.x, y, (int) who.z);
 
         placeChest(who, blockPosition);
