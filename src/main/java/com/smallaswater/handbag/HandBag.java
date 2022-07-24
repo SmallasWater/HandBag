@@ -1,6 +1,7 @@
 package com.smallaswater.handbag;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -222,10 +223,15 @@ public class HandBag extends PluginBase implements Listener {
                 player.sendMessage("§6[§7手提袋§6] §c 堆叠状态无法开启");
                 return;
             }
-            if(player.getY() >= 250 || player.getY() <= 5){
+
+            //高度检查，避免无法生成假箱子
+            int minY = "PowerNukkitX".equalsIgnoreCase(Server.getInstance().getCodename()) ? -64 : 0;
+            int maxY = "PowerNukkitX".equalsIgnoreCase(Server.getInstance().getCodename()) ? 384 : 256;
+            if(player.getY() >= maxY || player.getY() <= minY){
                 player.sendMessage("§6[§7手提袋§6] §c 当前位置无法开启");
                 return;
             }
+
             if(AbstractFakeInventory.OPEN.containsKey(player)){
                 AbstractFakeInventory fakeInventory = AbstractFakeInventory.OPEN.get(player);
                 fakeInventory.clearAll();
