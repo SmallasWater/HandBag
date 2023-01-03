@@ -5,10 +5,8 @@ import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.level.Position;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.smallaswater.handbag.HandBag;
@@ -126,8 +124,9 @@ public abstract class BaseBag implements InventoryHolder {
 
 
     public static Item stringToItem(String str){
-        String[] s = str.split(":");
-        return Item.get(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
+        return Item.fromString(str);
+        //String[] s = str.split(":");
+        //return Item.get(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
     }
 
 
