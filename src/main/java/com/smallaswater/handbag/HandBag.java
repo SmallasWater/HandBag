@@ -8,7 +8,6 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryPickupItemEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
-import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.form.element.ElementInput;
@@ -21,7 +20,6 @@ import cn.nukkit.level.Sound;
 
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.utils.Config;
 import com.smallaswater.handbag.commands.HandBagUseCommand;
 import com.smallaswater.handbag.forms.WindowsListener;
 import com.smallaswater.handbag.inventorys.BaseInventory;
@@ -33,6 +31,7 @@ import com.smallaswater.handbag.utils.Tools;
 
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -46,7 +45,7 @@ public class HandBag extends PluginBase implements Listener {
 
     private static HandBag bag;
 
-    private LinkedHashMap<String,Long> key = new LinkedHashMap<>();
+    private ConcurrentHashMap<String,Long> key = new ConcurrentHashMap<>();
 
     public LinkedHashMap<String,Integer> slot = new LinkedHashMap<>();
 
@@ -291,33 +290,6 @@ public class HandBag extends PluginBase implements Listener {
 
         }
 
-    }
-
-
-
-    @EventHandler
-    public void onWindow(PlayerFormRespondedEvent event){
-        Player player = event.getPlayer();
-        if(event.getFormID() == 0x25565){
-            if (event.getResponse() == null) {
-                return;
-            }
-            FormWindowCustom custom = ((FormWindowCustom)event.getWindow());
-            String input = custom.getResponse().getInputResponse(0);
-
-            Item item = player.getInventory().getItem(this.slot.get(player.getName()));
-            if(item.getNamedTag() != null){
-                if(item.getNamedTag().contains(BaseBag.NAME_TAG)){
-                    int slot = this.slot.get(player.getName());
-                    if("".equalsIgnoreCase(input)) {
-                        input = "未命名手提袋";
-                    }
-                    item.setCustomName(input.replace("&","§"));
-                    player.getInventory().setItem(slot,item);
-                    player.sendMessage("§6[§7手提袋§6] §2 成功重命名为: §r"+input.replace("&","§"));
-                }
-            }
-        }
     }
 
     @EventHandler
