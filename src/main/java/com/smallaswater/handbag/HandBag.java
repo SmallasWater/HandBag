@@ -62,20 +62,21 @@ public class HandBag extends PluginBase implements Listener {
         this.saveDefaultConfig();
         this.reloadConfig();
 
-        this.getLogger().info("手提包加载成功...");
-        this.register();
-    }
-
-    private void register() {
-        LinkedList<BaseBag> baseBag = BaseBag.registerItem(getConfig());
-        for (BaseBag baseBag1 : baseBag) {
-            if (!Item.isCreativeItem(baseBag1.getItem())) {
-                Item.addCreativeItem(baseBag1.getItem());
-            }
-        }
         this.getServer().getPluginManager().registerEvents(this, this);
         this.getServer().getPluginManager().registerEvents(new WindowsListener(), this);
         this.getServer().getCommandMap().register("handbag", new HandBagUseCommand("hg"));
+
+        //使用Task在所有插件加载完成后注册物品，防止无法使用自定义物品
+        this.getServer().getScheduler().scheduleTask(this, () -> {
+            LinkedList<BaseBag> baseBags = BaseBag.registerItem(getConfig());
+            for (BaseBag baseBag : baseBags) {
+                if (!Item.isCreativeItem(baseBag.getItem())) {
+                    Item.addCreativeItem(baseBag.getItem());
+                }
+            }
+        });
+
+        this.getLogger().info("手提包加载成功...");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

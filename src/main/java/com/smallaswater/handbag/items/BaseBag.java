@@ -261,7 +261,6 @@ public abstract class BaseBag implements InventoryHolder {
             bag.setCanRemove(item.getNamedTag().getBoolean("remove"));
             bag.setSneaking(item.getNamedTag().getBoolean("sneaking-rename"));
             bags.add(bag);
-
         }
 
         return bags;
