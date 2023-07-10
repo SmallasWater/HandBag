@@ -5,10 +5,6 @@ import cn.nukkit.Player;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
-import cn.nukkit.item.Item;
-import cn.nukkit.network.protocol.ContainerOpenPacket;
-import cn.nukkit.network.protocol.RemoveEntityPacket;
-import com.smallaswater.handbag.HandBag;
 import com.smallaswater.handbag.inventorys.lib.HopperFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
 
@@ -25,30 +21,12 @@ public class SmallInventory extends HopperFakeInventory implements BaseInventory
     }
 
     @Override
-    public void onOpen(Player who) {
-//        ContainerOpenPacket pk = new ContainerOpenPacket();
-//        pk.windowId = who.getWindowId(this);
-//        pk.entityId = id;
-//        pk.type = InventoryType.HOPPER.getNetworkType();
-//        who.dataPacket(pk);
-
-        super.onOpen(who);
-    }
-
-    @Override
-    public void onSlotChange(int index, Item before, boolean send) {
-        super.onSlotChange(index, before, send);
-
-    }
-
-    @Override
     public String getTitle() {
         if(holder instanceof BaseBag) {
             return ((BaseBag) holder).getItem().getCustomName();
         }
         return "无~~";
     }
-
 
     @Override
     public void onClose(Player who) {
@@ -67,7 +45,6 @@ public class SmallInventory extends HopperFakeInventory implements BaseInventory
     public Inventory getInventory() {
         return this;
     }
-
 
     @Override
     public void setPlayer(Player player) {

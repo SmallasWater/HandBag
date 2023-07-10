@@ -12,12 +12,13 @@ import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.window.FormWindowCustom;
-import cn.nukkit.inventory.*;
+import cn.nukkit.inventory.Inventory;
+import cn.nukkit.inventory.InventoryHolder;
+import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
-
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.plugin.PluginBase;
 import com.smallaswater.handbag.commands.HandBagUseCommand;
@@ -25,10 +26,7 @@ import com.smallaswater.handbag.forms.WindowsListener;
 import com.smallaswater.handbag.inventorys.BaseInventory;
 import com.smallaswater.handbag.inventorys.lib.AbstractFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
-
-
 import com.smallaswater.handbag.utils.Tools;
-
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -278,13 +276,12 @@ public class HandBag extends PluginBase implements Listener {
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        if (event.getInventory() instanceof com.smallaswater.handbag.inventorys.BaseInventory) {
+        if (event.getInventory() instanceof BaseInventory) {
             Player player = event.getPlayer();
             InventoryHolder holder = event.getInventory().getHolder();
             if (holder instanceof BaseBag) {
                 player.level.addSound(player, Sound.RANDOM_CHESTCLOSED);
-                this.key.remove(player.getName());
-                //saveSolt(player, ((BaseBag) holder).getItem());
+                this.saveSolt(player, ((BaseBag) holder).getItem());
             }
         }
     }
@@ -336,17 +333,17 @@ public class HandBag extends PluginBase implements Listener {
         }
     }
 
-    /*private void saveSolt(Player player,Item holder){
+    private void saveSolt(Player player, Item holder) {
         THREAD_POOL.execute(() -> {
             try {
                 Thread.sleep(30);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(Tools.isHandBag(holder)){
-                BaseBag bag = BaseBag.getBaseBagByItem(player,holder.getNamedTag().getString("configName"),holder);
+            if (Tools.isHandBag(holder)) {
+                BaseBag bag = BaseBag.getBaseBagByItem(player, holder.getNamedTag().getString("configName"), holder);
                 Item i = bag.toItem();
-                if(!HandBag.getBag().slot.containsKey(player.getName())){
+                if (!HandBag.getBag().slot.containsKey(player.getName())) {
                     return;
                 }
                 int slot = HandBag.getBag().slot.get(player.getName());
@@ -357,14 +354,12 @@ public class HandBag extends PluginBase implements Listener {
                         return;
                     }
                 }
-                if(player.getInventory().setItem(slot, i)){
+                if (player.getInventory().setItem(slot, i)) {
                     this.slot.remove(player.getName());
-                    key.remove(player.getName());
+                    this.key.remove(player.getName());
                 }
             }
-
         });
-
-    }*/
+    }
 
 }
