@@ -1,8 +1,6 @@
 package com.smallaswater.handbag.inventorys.lib;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.block.BlockID;
 import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
@@ -11,7 +9,6 @@ import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.ContainerOpenPacket;
 import cn.nukkit.network.protocol.UpdateBlockPacket;
-import com.smallaswater.handbag.HandBag;
 
 import java.util.HashMap;
 import java.util.List;
@@ -109,9 +106,7 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
         }catch (Exception e){
             this.clearAll();
             e.printStackTrace();
-
         }
-
     }
 
     @Override
@@ -123,8 +118,5 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
     public String getTitle() {
         return title;
     }
-
-
-
 
 }
