@@ -121,17 +121,11 @@ public abstract class BaseBag implements InventoryHolder {
         return (AbstractFakeInventory) inventory.getInventory();
     }
 
-
-
     public static Item stringToItem(String str){
         return Item.fromString(str);
-        //String[] s = str.split(":");
-        //return Item.get(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
     }
 
-
     public void close() {
-
         if(item.getNamedTag() != null) {
             CompoundTag tag = toCompoundTagBySlot(inventory.getInventory().getContents());
             this.item.getNamedTag().putCompound(NAME_TAG,tag);
