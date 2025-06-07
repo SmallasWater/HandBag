@@ -21,30 +21,20 @@ import java.util.concurrent.Executors;
  * 本类引用 SupermeMortal 的 FakeInventories 插件
  * @author SupermeMortal*/
 public abstract class AbstractFakeInventory extends ContainerInventory {
-
-    public long id;
-
+    public static boolean IS_PM1E = false;
     private static final BlockVector3 ZERO = new BlockVector3(0, 0, 0);
 
     public static final Map<Player, AbstractFakeInventory> OPEN = new ConcurrentHashMap<>();
 
-    public Map<String, List<BlockVector3>> blockPositions = new HashMap<>();
+    public long id;
+
+    public final Map<Player, List<BlockVector3>> blockPositions = new HashMap<>();
     private String title;
 
     AbstractFakeInventory(InventoryType type, InventoryHolder holder, String title) {
         super(holder, type);
         this.title = title == null ? type.getDefaultTitle() : title;
-    }
-
-    protected UpdateBlockPacket getDefaultPack(int id,BlockVector3 pos){
-        UpdateBlockPacket updateBlock = new UpdateBlockPacket();
-        updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(id, 0);
-        updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
-        updateBlock.x = pos.x;
-        updateBlock.y = pos.y;
-        updateBlock.z = pos.z;
-        return updateBlock;
-
+        id = System.currentTimeMillis();
     }
 
     @Override
@@ -53,10 +43,11 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
         this.viewers.add(who);
         if (OPEN.putIfAbsent(who, this) != null) {
             return;
+//            throw new IllegalStateException("Inventory was already open");
         }
 
         List<BlockVector3> blocks = onOpenBlock(who);
-        blockPositions.put(who.getName(), blocks);
+        blockPositions.put(who, blocks);
 
         onFakeOpen(who, blocks);
     }
@@ -86,37 +77,37 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
     public void onClose(Player who) {
         super.onClose(who);
         OPEN.remove(who, this);
-        try {
-            if (blockPositions.containsKey(who.getName())) {
-                List<BlockVector3> blocks = blockPositions.get(who.getName());
-                for (int i = 0, size = blocks.size(); i < size; i++) {
-                    final int index = i;
-                    service.execute(() -> {
-                        Vector3 blockPosition = blocks.get(index).asVector3();
-                        UpdateBlockPacket updateBlock = new UpdateBlockPacket();
-                        updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.getLevel().getBlock(blockPosition).getFullId());
-                        updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
-                        updateBlock.x = blockPosition.getFloorX();
-                        updateBlock.y = blockPosition.getFloorY();
-                        updateBlock.z = blockPosition.getFloorZ();
-                        who.dataPacket(updateBlock);
-                    });
+        List<BlockVector3> blocks = blockPositions.get(who);
+        if(blocks == null){
+            return;
+        }
+        for (int i = 0, size = blocks.size(); i < size; i++) {
+            final int index = i;
+            service.execute(() -> {
+                Vector3 blockPosition = blocks.get(index).asVector3();
+                UpdateBlockPacket updateBlock = new UpdateBlockPacket();
+                if(IS_PM1E){
+                    updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.protocol,who.getLevel().getBlock(blockPosition).getFullId());
+                }else{
+                    updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.getLevel().getBlock(blockPosition).getFullId());
                 }
-            }
-        }catch (Exception e){
-            this.clearAll();
-            e.printStackTrace();
+                updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
+                updateBlock.x = blockPosition.getFloorX();
+                updateBlock.y = blockPosition.getFloorY();
+                updateBlock.z = blockPosition.getFloorZ();
+                who.dataPacket(updateBlock);
+            });
         }
     }
 
-    @Override
-    public InventoryHolder getHolder() {
-        return holder;
-    }
+
 
     @Override
     public String getTitle() {
         return title;
     }
+
+
+
 
 }

@@ -2,7 +2,6 @@ package com.smallaswater.handbag.inventorys;
 
 
 import cn.nukkit.Player;
-import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import com.smallaswater.handbag.inventorys.lib.DoubleChestFakeInventory;
 import com.smallaswater.handbag.items.BaseBag;
@@ -25,10 +24,6 @@ public class BigBagInventory extends DoubleChestFakeInventory implements BaseInv
             ((BaseBag) holder).close();
         }
 
-//        RemoveEntityPacket pk = new RemoveEntityPacket();
-//        pk.eid = id;
-//        who.dataPacket(pk);
-
         super.onClose(who);
     }
 
@@ -42,8 +37,4 @@ public class BigBagInventory extends DoubleChestFakeInventory implements BaseInv
         return player;
     }
 
-    @Override
-    public Inventory getInventory() {
-        return this;
-    }
 }

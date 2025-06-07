@@ -1,13 +1,12 @@
 package com.smallaswater.handbag.inventorys;
 
 import cn.nukkit.Player;
-import cn.nukkit.inventory.InventoryHolder;
-import com.smallaswater.handbag.items.BaseBag;
+import cn.nukkit.inventory.Inventory;
 
 /**
  * @author SmallasWater
  */
-public interface BaseInventory extends InventoryHolder {
+public interface BaseInventory extends Inventory {
 
     /**
      * 正在使用的玩家

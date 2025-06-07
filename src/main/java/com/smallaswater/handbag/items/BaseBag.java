@@ -69,12 +69,12 @@ public abstract class BaseBag implements InventoryHolder {
         this.inventory.setPlayer(player);
         CompoundTag tag = item.getNamedTag();
         if(tag.contains(BaseBag.NAME_TAG)) {
-            this.inventory.getInventory().setContents(
+            this.inventory.setContents(
                     toSlotByItem(getItem()
                             .getNamedTag().getCompound(BaseBag.NAME_TAG))
             );
             if(player != null){
-                this.inventory.getInventory().sendContents(player);
+                this.inventory.sendContents(player);
             }
         }
     }
@@ -118,7 +118,7 @@ public abstract class BaseBag implements InventoryHolder {
 
     @Override
     public AbstractFakeInventory getInventory() {
-        return (AbstractFakeInventory) inventory.getInventory();
+        return (AbstractFakeInventory) inventory;
     }
 
     public static Item stringToItem(String str){
@@ -127,7 +127,7 @@ public abstract class BaseBag implements InventoryHolder {
 
     public void close() {
         if(item.getNamedTag() != null) {
-            CompoundTag tag = toCompoundTagBySlot(inventory.getInventory().getContents());
+            CompoundTag tag = toCompoundTagBySlot(inventory.getContents());
             this.item.getNamedTag().putCompound(NAME_TAG,tag);
         }
     }
@@ -204,12 +204,12 @@ public abstract class BaseBag implements InventoryHolder {
         String pick = autoPickUp?"&a开启":"&c关闭";
         for(String s:list){
             lores.add(TextFormat.colorize('&',s.replace("%key%",pick)
-                    .replace("%size%",inventory.getInventory().getSize()+"")
-                    .replace("%count%",inventory.getInventory().getContents().size()+"")));
+                    .replace("%size%",inventory.getSize()+"")
+                    .replace("%count%",inventory.getContents().size()+"")));
         }
         CompoundTag tag = item.getNamedTag();
         tag.putBoolean("auto-pickup",autoPickUp);
-        tag.putCompound(NAME_TAG,toCompoundTagBySlot(inventory.getInventory().getContents()));
+        tag.putCompound(NAME_TAG,toCompoundTagBySlot(inventory.getContents()));
         item.setCompoundTag(tag);
         item.setLore(lores.toArray(new String[0]));
         if(!item.hasEnchantments()) {

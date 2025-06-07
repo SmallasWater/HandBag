@@ -5,6 +5,7 @@ import cn.nukkit.Server;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
+import cn.nukkit.level.Position;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -26,7 +27,7 @@ public class DoubleChestFakeInventory extends ChestFakeInventory{
         this(holder, null);
     }
 
-    private DoubleChestFakeInventory(InventoryHolder holder, String title) {
+    DoubleChestFakeInventory(InventoryHolder holder, String title) {
         super(InventoryType.DOUBLE_CHEST, holder, title);
     }
 
@@ -36,15 +37,16 @@ public class DoubleChestFakeInventory extends ChestFakeInventory{
         this.viewers.add(who);
 
         List<BlockVector3> blocks = onOpenBlock(who);
-        blockPositions.put(who.getName(), blocks);
+        blockPositions.put(who, blocks);
 
         Server.getInstance().getScheduler().scheduleDelayedTask(HandBag.getBag(),() -> onFakeOpen(who, blocks), 3);
     }
 
     @Override
     protected List<BlockVector3> onOpenBlock(Player who) {
-        int y = who.getY() > 250 ? who.getFloorY() - 3 : who.getFloorY() + 3;
-        BlockVector3 blockPositionA = new BlockVector3((int) who.x, y, (int) who.z);
+        Position np = who.getSide(who.getDirection().rotateY().rotateY(),4) ;
+
+        BlockVector3 blockPositionA = new BlockVector3((int) np.x, ((int) np.y) + 2, (int) np.z);
         BlockVector3 blockPositionB = blockPositionA.add(1, 0, 0);
 
         placeChest(who, blockPositionA);

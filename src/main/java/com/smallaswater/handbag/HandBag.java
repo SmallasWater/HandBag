@@ -2,6 +2,7 @@ package com.smallaswater.handbag;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -21,6 +22,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.TextFormat;
 import com.smallaswater.handbag.commands.HandBagUseCommand;
 import com.smallaswater.handbag.forms.WindowsListener;
 import com.smallaswater.handbag.inventorys.BaseInventory;
@@ -46,6 +48,8 @@ public class HandBag extends PluginBase implements Listener {
 
     public LinkedHashMap<String, Integer> slot = new LinkedHashMap<>();
 
+    public static final String PLUGIN_NAME = "&f[&c系统&f]";
+
     private static final ThreadPoolExecutor THREAD_POOL = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
     public static HandBag getBag() {
@@ -61,6 +65,7 @@ public class HandBag extends PluginBase implements Listener {
     public void onEnable() {
         this.saveDefaultConfig();
         this.reloadConfig();
+        checkServer();
 
         this.getServer().getPluginManager().registerEvents(this, this);
         this.getServer().getPluginManager().registerEvents(new WindowsListener(), this);
@@ -91,7 +96,7 @@ public class HandBag extends PluginBase implements Listener {
         }
         if (Tools.isHandBag(hand)) {
             event.setCancelled();
-            //openHandBag(event.getPlayer(), event.getPlayer().getInventory().getHeldItemIndex(), hand);
+            openHandBag(event.getPlayer(), event.getPlayer().getInventory().getHeldItemIndex(), hand);
         }
     }
 
@@ -250,7 +255,7 @@ public class HandBag extends PluginBase implements Listener {
             key.remove(player.getName());
             return;
         }
-        if (bag.getInventory().blockPositions.containsKey(player.getName())) {
+        if (bag.getInventory().blockPositions.containsKey(player)) {
             return;
         }
         if (bag.getPlayer() == null) {
@@ -334,6 +339,38 @@ public class HandBag extends PluginBase implements Listener {
         }
     }
 
+    public static String CORE_NAME = "";
+
+    private void checkServer(){
+        boolean ver = false;
+        //双核心兼容
+        CORE_NAME = "Nukkit";
+        try {
+            Class<?> c = Class.forName("cn.nukkit.Nukkit");
+            c.getField("NUKKIT_PM1E");
+            ver = true;
+            CORE_NAME = "Nukkit PM1E";
+        } catch (ClassNotFoundException | NoSuchFieldException ignore) {
+
+        }
+        try {
+            Class<?> c = Class.forName("cn.nukkit.Nukkit");
+            CORE_NAME = c.getField("NUKKIT").get(c).toString();
+
+            ver = true;
+
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignore) {
+
+        }
+
+        AbstractFakeInventory.IS_PM1E = ver;
+        if(ver){
+            Server.getInstance().enableExperimentMode = true;
+            Server.getInstance().forceResources = true;
+        }
+        sendMessageToConsole("&e当前核心为 "+CORE_NAME);
+    }
+
     private void saveSolt(Player player, Item holder) {
         THREAD_POOL.execute(() -> {
             try {
@@ -348,7 +385,7 @@ public class HandBag extends PluginBase implements Listener {
                     return;
                 }
                 int slot = HandBag.getBag().slot.get(player.getName());
-                if (bag.getInventory().getContents().size() == 0) {
+                if (bag.getInventory().getContents().isEmpty()) {
                     if (bag.isCanRemove()) {
                         Item r = player.getInventory().getItem(slot);
                         player.getInventory().removeItem(r);
@@ -363,4 +400,24 @@ public class HandBag extends PluginBase implements Listener {
         });
     }
 
+    public static void sendMessageToObject(String msg, Object o){
+        String message = TextFormat.colorize('&',PLUGIN_NAME+" &r"+msg);
+        if(o != null){
+            if(o instanceof Player){
+                if(((Player) o).isOnline()) {
+                    ((Player) o).sendMessage(message);
+                    return;
+                }
+            }
+            if(o instanceof EntityHuman){
+                message = ((EntityHuman) o).getName()+"->"+message;
+            }
+        }
+        Server.getInstance().getLogger().info(message);
+
+    }
+
+    public static void sendMessageToConsole(String msg){
+        sendMessageToObject(msg,null);
+    }
 }

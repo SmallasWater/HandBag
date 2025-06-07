@@ -2,7 +2,6 @@ package com.smallaswater.handbag.inventorys;
 
 
 import cn.nukkit.Player;
-import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import com.smallaswater.handbag.inventorys.lib.ChestFakeInventory;
@@ -44,15 +43,7 @@ public class BagInventory extends ChestFakeInventory implements BaseInventory {
             ((BaseBag) holder).close();
         }
 
-//        RemoveEntityPacket pk = new RemoveEntityPacket();
-//        pk.eid = id;
-//        who.dataPacket(pk);
-
         super.onClose(who);
     }
 
-    @Override
-    public Inventory getInventory() {
-        return this;
-    }
 }

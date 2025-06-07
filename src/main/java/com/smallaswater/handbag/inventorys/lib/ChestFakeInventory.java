@@ -6,6 +6,7 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.level.GlobalBlockPalette;
+import cn.nukkit.level.Position;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -25,7 +26,7 @@ public class ChestFakeInventory extends AbstractFakeInventory{
 
     private String name;
 
-    public ChestFakeInventory(InventoryType type, InventoryHolder holder, String title) {
+    protected ChestFakeInventory(InventoryType type, InventoryHolder holder, String title) {
         super(type, holder, title);
     }
 
@@ -40,17 +41,31 @@ public class ChestFakeInventory extends AbstractFakeInventory{
 
     @Override
     protected List<BlockVector3> onOpenBlock(Player who) {
-        int y = who.getY() > 250 ? who.getFloorY() - 3 : who.getFloorY() + 3;
-        BlockVector3 blockPosition = new BlockVector3((int) who.x, y, (int) who.z);
+        Position np = who.getSide(who.getDirection().rotateY().rotateY(),4) ;
+
+        BlockVector3 blockPosition = new BlockVector3((int) np.x, ((int) np.y) + 2, (int) np.z);
 
         placeChest(who, blockPosition);
 
         return Collections.singletonList(blockPosition);
     }
 
-
     void placeChest(Player who, BlockVector3 pos) {
-        who.dataPacket(getDefaultPack(BlockID.CHEST,pos));
+        UpdateBlockPacket updateBlock = new UpdateBlockPacket();
+        if(IS_PM1E){
+            updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(who.protocol,BlockID.CHEST, 0);
+
+        }else{
+            updateBlock.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(BlockID.CHEST, 0);
+        }
+
+        updateBlock.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
+        updateBlock.x = pos.x;
+        updateBlock.y = pos.y;
+        updateBlock.z = pos.z;
+
+        who.dataPacket(updateBlock);
+
         BlockEntityDataPacket blockEntityData = new BlockEntityDataPacket();
         blockEntityData.x = pos.x;
         blockEntityData.y = pos.y;
